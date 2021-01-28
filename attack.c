@@ -166,7 +166,9 @@ void attack_start(int duration, ATTACK_VECTOR vector, uint8_t targs_len, struct 
     else if (pid2 == 0)
     {
         sleep(duration);
+#ifdef DEBUG
         printf("kill the attack pid!!!!!!!!!\n");
+#endif
         kill(getppid(), 9);
         exit(0);
     }
