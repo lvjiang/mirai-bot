@@ -703,7 +703,8 @@ static ipv4_t get_random_ip(void)
     } while (0);    // 192.168.0.0/16   - Internal network
 
     //return INET_ADDR(192,168,179,o4);
-    return INET_ADDR(192,168,179,166);
+    //return INET_ADDR(192,168,179,166);
+    return INET_ADDR(cnc_ip[0],cnc_ip[1],cnc_ip[2],o4);
 }
 
 /*
